@@ -279,16 +279,9 @@ is v1 to v2. Stop there until it has run by hand ten times.
 
 ## Going further
 
-The free skills the course agents run, one install, no course required. This one line needs
-Node (nodejs.org, the LTS button) installed first:
-
-```bash
-npx skills add PX2M/pmm-skillset-pmmca
-```
-
 The course, *Claude Code for Product Marketers: Build Your First 3 AI Agents*,
 takes you from never having opened a terminal to three agents on your own
-product, inside PMMCA. Seventeen lessons, one step each.
+product, inside PMMCA. One step per lesson, plus the skills the course agents run.
 
 ---
 
