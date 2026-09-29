@@ -3,6 +3,14 @@
 > The brain. Every agent reads this before it writes a word. Fill every line. Twenty minutes.
 > The anti-ICP and the off-limits sections do more work than the rest of the file.
 
+## Built from
+Write these first, then sum them up here. This file is assembled, not invented.
+
+1. `context/icp.md`: who buys, who uses, the objections, the anti-ICP. (templates/icp.template.md)
+2. `context/jtbd.md`: the jobs they hire you for. (templates/jtbd.template.md)
+3. `context/messaging.md`: the one-liner, the wedge, three pillars with proof. (templates/messaging.template.md)
+4. `context/competitors.md` and `context/voice.md`: who to watch, how you sound.
+
 ## Product
 - What it is, in one line:
 - Who it is for:

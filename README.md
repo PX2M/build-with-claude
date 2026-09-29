@@ -11,17 +11,26 @@ You do not need a GitHub account. Use the green **Code** button above and
 
 ## What you need
 
-- A **paid** Claude plan (Pro or Max). The free plan cannot sign in to Claude Code.
-- A terminal. It is already on your machine. Mac: Terminal. Windows: PowerShell.
-- Claude Code installed. One line, then sign in:
+- A **paid** Claude plan (Pro or Max). The free plan does not include Claude Code.
+- A terminal. It is already on your machine. Mac: open **Terminal** (Cmd+Space, type Terminal). Windows: open **PowerShell** (Start menu, type PowerShell).
+- Claude Code installed. Paste ONE line into the terminal, press Enter, wait for it to finish:
+
+Mac:
 
 ```bash
-npm install -g @anthropic-ai/claude-code
-claude
+curl -fsSL https://claude.ai/install.sh | bash
 ```
 
-If `npm` is not found, install Node from nodejs.org first (the LTS button), then
-run the two lines again. That is the whole install.
+Windows (PowerShell):
+
+```powershell
+irm https://claude.ai/install.ps1 | iex
+```
+
+Then **close the terminal and open a new one**, and type `claude --version`. If it prints a
+version number, you are installed. The first time you type `claude` it opens your browser to sign
+in. That is the whole install. If something fails, the official troubleshooting
+page is https://code.claude.com/docs/en/troubleshoot-install
 
 ---
 
@@ -44,6 +53,46 @@ ladder, and it comes later, one rung at a time.
 
 ---
 
+## How the pieces fit
+
+The brain is not written in one go. It is built in layers, and each layer comes from the one
+above it. Skip a layer and the agent fills the gap with generic.
+
+```
+  ICP              who buys, who uses, what they object to      context/icp.md
+   |
+   v
+  Job to be done   what they are trying to get done             context/jtbd.md
+   |
+   v
+  Messaging        what we say, in their words, with proof      context/messaging.md
+   |
+   v
+  CLAUDE.md        the brain: the three above, plus the rules   CLAUDE.md
+   |
+   v
+  Agent brief      one job for the agent                        compete-agent.md
+   |
+   v
+  Outputs          what it wrote, graded against evals/         outputs/
+```
+
+The top three are yours to write, once. The brain sums them up and adds what is off limits. The
+brief is the only part that changes between agents. Compete, Position and Launch all read the
+same brain.
+
+For Mitzu, the chain reads like this:
+
+- **ICP:** product managers and product leads, plus the data lead who owns the warehouse.
+- **Job:** "When I have a product question, I want to answer it myself, so I can decide this
+  week instead of waiting days in the data team's queue."
+- **Messaging:** Mitzu answers your product questions in plain English, straight from the data
+  your company already keeps.
+- **Brain:** `mitzu/CLAUDE.md`, with a "Built from" list at the top pointing back at all three.
+- **Brief:** `mitzu/compete-agent.md`. **Output:** `mitzu/outputs/battle-card.md`.
+
+---
+
 ## Step by step: your first agent, v1
 
 Five steps. Same five as the webinar. Do them on Mitzu first, exactly as
@@ -52,12 +101,15 @@ at your own product.
 
 ### Step 1. Name it
 
-Open a terminal in the `mitzu/` folder and start Claude Code.
+Open a terminal **inside the `mitzu` folder** of the unzipped download. The easiest way:
 
-```bash
-cd mitzu
-claude
-```
+- **Mac:** open Terminal, type `cd ` (with a space after it), drag the `mitzu` folder from Finder
+  onto the Terminal window, press Enter.
+- **Windows:** open the `mitzu` folder in File Explorer, click the address bar at the top, type
+  `powershell`, press Enter. A PowerShell window opens already in the right place.
+
+Type `ls`. You should see `CLAUDE.md`, `compete-agent.md` and a `context` folder. If you do, you
+are in the right place.
 
 The job tonight is Compete: watch two named competitors and write the battle
 card a rep opens ninety seconds before a demo. Notice what it is not. "Track our
@@ -65,16 +117,22 @@ competitors" is not a job. Two named companies, one reader, one output is.
 
 ### Step 2. Feed it
 
-Read the brain before you run anything. It is short on purpose.
+Read the brain before you run anything. It is short on purpose. Same commands on Mac and Windows:
 
 ```
 cat CLAUDE.md
-ls context/
+cat context/icp.md
+cat context/jtbd.md
+cat context/messaging.md
 ```
+
+(Prefer a normal editor? Open the same files in any text editor. They are plain text.)
 
 `CLAUDE.md` is what the agent reads before it writes a word: the product, the
 buyer, the anti-buyer, the voice, the claims that are off limits. The
-`context/` folder holds the named competitors, the ICP and the voice notes.
+`context/` folder holds the layers it is built from: the ICP with the four objections the buyer
+raises, the jobs to be done, the messaging, the named competitors and the voice notes. Open
+`CLAUDE.md` and look at the "Built from" list at the top. That is the chain, in one file.
 This is the step most people skip, and it is the reason their output comes back
 generic. Context is the whole difference, and context is a file you write once.
 
@@ -85,7 +143,7 @@ cat compete-agent.md
 ```
 
 That is the brief. It is a job description, not code. Watch, flag, ignore,
-output, and two rules: every claim needs a source, and name where we lose. A
+output, and the rules: every claim needs a source, and name where we lose. A
 card with no losing case gets ignored by reps.
 
 ### Step 4. Run it
@@ -94,7 +152,19 @@ Before you run, read `evals/expected-output.md`. It says what a good battle card
 looks like, and it was written before the run. Grading on vibes afterwards is
 how an agent drifts for three weeks without anyone noticing.
 
-Then, in Claude Code, type this (it is one message):
+Your run will overwrite our battle card, so keep a copy of ours to compare against:
+
+```
+cp outputs/battle-card.md outputs/battle-card-ours.md
+```
+
+Now start Claude Code, in the same terminal:
+
+```
+claude
+```
+
+Then type this (it is one message):
 
 ```
 Using my CLAUDE.md and compete-agent.md, go to amplitude.com/pricing and
@@ -103,9 +173,10 @@ and write me the battle card in the format in the brief.
 Save it to outputs/battle-card.md.
 ```
 
-It reads the brain, reads the brief, fetches the two pages, ranks what it
-found against the wedge, and writes the file. Open `outputs/battle-card.md`.
-The one we got on the night is committed next to it, so you can compare.
+It will ask permission before it fetches a web page and before it writes a file. Read the
+request, then approve it. It reads the brain, reads the brief, fetches the pages, ranks what it
+found against the wedge, and writes the file. Open `outputs/battle-card.md` and compare it with
+`outputs/battle-card-ours.md`, the one we got on the run before the webinar.
 
 ### Step 5. Fix it
 
@@ -119,19 +190,53 @@ Step 5 is the one nobody does. It is the one that compounds.
 
 ---
 
-## Then point it at your product
+## Plug it into your own brain
 
-1. Copy `templates/CLAUDE.template.md` to a new folder as `CLAUDE.md` and fill
-   it in. Twenty minutes. The anti-ICP section does more work than the rest.
-2. Copy `templates/compete-agent.template.md` next to it. Name two competitors.
-   Not a category, two companies.
-3. Copy `templates/expected-output.template.md` into `evals/`. Write what a good
-   card looks like before you run.
-4. Run step 4 with your competitors' pricing pages. Then step 5.
+Same files, your product. The agent briefs do not change much. The brain does.
 
-The Position and Launch briefs (`mitzu/position-agent.md`,
-`mitzu/launch-agent.md`) are the same shape with a different job. Once Compete
-works, they take an evening each.
+**1. Make the folder.** Next to `mitzu/`, make a folder for your product and copy the templates in:
+
+```
+your-product/
+  CLAUDE.md                 <- from templates/CLAUDE.template.md
+  compete-agent.md          <- from templates/compete-agent.template.md
+  context/
+    icp.md                  <- from templates/icp.template.md
+    jtbd.md                 <- from templates/jtbd.template.md
+    messaging.md            <- from templates/messaging.template.md
+    competitors.md          <- two named competitors, their pricing and changelog URLs
+    voice.md                <- how you sound, what you never say
+  evals/
+    expected-output.md      <- from templates/expected-output.template.md
+  outputs/                  <- empty. The agent writes here.
+```
+
+Copy `mitzu/context/competitors.md` and `mitzu/context/voice.md` as a starting shape for the last
+two. Rename every template as you copy it: drop the `.template`.
+
+**2. Write the chain, top down.** In this order, because each one feeds the next:
+
+- `icp.md`: who uses it, who signs, and the three to five objections your reps actually hear,
+  in the buyer's words. The anti-ICP does more work than the ICP.
+- `jtbd.md`: two or three jobs. When, I want to, so I can. One quote under each.
+- `messaging.md`: the one line a stranger understands, the wedge, three pillars. No pillar
+  without proof.
+
+**3. Write the brain from them.** Fill `CLAUDE.md`. Most of it is a summary of the three files
+above, plus the parts only the brain holds: what the product does not do, and the claims that
+are off limits. Keep the "Built from" list at the top so the next person can see where every
+line came from. Twenty minutes, if the three files are done.
+
+**4. Reuse the briefs.** Copy `mitzu/compete-agent.md` (or the template), and change only what
+is Mitzu-specific: the two competitors and the wedge. The rules stay. Same for
+`mitzu/position-agent.md` and `mitzu/launch-agent.md`: they already point at `CLAUDE.md` and
+`context/`, so they work on your brain as written. Once Compete works, they take an evening each.
+
+**5. Write the eval, then run.** Fill `evals/expected-output.md` before the first run. Then do
+step 4 and step 5 above, from inside your folder, with your competitors' pricing pages.
+
+When an output comes back generic, walk the chain upward. A weak battle card is usually a thin
+objection list in `icp.md`, not a bad brief.
 
 ---
 
@@ -164,17 +269,18 @@ is v1 to v2. Stop there until it has run by hand ten times.
 | Path | What it is |
 | --- | --- |
 | `mitzu/CLAUDE.md` | The brain for the demo product. Built from Mitzu's public pages only. |
-| `mitzu/context/` | The named competitors, the ICP and the anti-ICP, the voice. |
-| `mitzu/compete-agent.md` | The brief we ran live. |
+| `mitzu/context/` | The layers the brain is built from: ICP (with the four buyer objections and the anti-ICP), jobs to be done, messaging, competitors, voice. |
+| `mitzu/compete-agent.md` | The Compete brief, the one on screen in the webinar. |
 | `mitzu/position-agent.md`, `mitzu/launch-agent.md` | The other two briefs. Same shape, different job. |
 | `mitzu/evals/` | Expected output, written before the run, and the scorecard rubric. |
 | `mitzu/outputs/` | What the agents produced. Compare yours against these. |
-| `templates/` | Blank brain, blank brief, blank expected output. For your product. |
+| `templates/` | Blank ICP, jobs to be done, messaging, brain, brief and expected output. For your product. |
 | `docs/LADDER.md` | v0 to v5. What each version adds, what it costs, and how it fails. |
 
 ## Going further
 
-The free skills the course agents run, one install, no course required:
+The free skills the course agents run, one install, no course required. This one line needs
+Node (nodejs.org, the LTS button) installed first:
 
 ```bash
 npx skills add PX2M/pmm-skillset-pmmca
