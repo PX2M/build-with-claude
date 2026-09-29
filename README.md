@@ -93,6 +93,44 @@ For Mitzu, the chain reads like this:
 
 ---
 
+## Tonight: make it yours
+
+I build on Mitzu on screen. You build on your company, in a copy of the same folder. Same commands on Mac and Windows:
+
+```
+git clone https://github.com/PX2M/build-with-claude.git
+cd build-with-claude
+cp -r mitzu my-company
+cd my-company
+claude
+```
+
+Then paste this, with your company's name and website:
+
+```
+This folder is a copy of the Mitzu example. Rewrite it for my company, [NAME] ([WEBSITE]).
+Go one file at a time, in this order: context/icp.md, context/jtbd.md, context/messaging.md,
+context/competitors.md (two real competitors), context/voice.md, then CLAUDE.md, then the
+Watch line in compete-agent.md. Empty the outputs/ folder. Remove everything about Mitzu.
+When the website does not answer something, ask me one question at a time. Never guess.
+```
+
+What changes, and why:
+
+| File | What it holds | Changes? |
+| --- | --- | --- |
+| `context/icp.md` | Who buys, who uses, what they object to | Yes, yours |
+| `context/jtbd.md` | The job they hire you for | Yes, yours |
+| `context/messaging.md` | What you say, with proof | Yes, yours |
+| `context/competitors.md` | Two named competitors, their pricing and changelog pages | Yes, yours |
+| `context/voice.md` | How you sound | Yes, yours |
+| `CLAUDE.md` | The brain, built from the five above | Yes, rebuilt from them |
+| `compete-agent.md` | The job | Only the `Watch:` line. The rules stay |
+| `evals/expected-output.md` | What a good card looks like | Swap in your objections |
+
+Then follow the five steps below, from inside `my-company`. When you are stuck, compare with the
+same file in `mitzu/`.
+
 ## Step by step: your first agent, v1
 
 Five steps. Same five as the webinar. Do them on Mitzu first, exactly as
